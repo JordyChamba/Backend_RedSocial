@@ -1,0 +1,39 @@
+-- SocialHub Database Schema
+-- This file is for reference only. Tables are auto-created by Hibernate.
+
+-- Users table
+-- CREATE TABLE users (
+--     id BIGSERIAL PRIMARY KEY,
+--     username VARCHAR(50) UNIQUE NOT NULL,
+--     email VARCHAR(100) UNIQUE NOT NULL,
+--     password VARCHAR(255) NOT NULL,
+--     full_name VARCHAR(100),
+--     bio VARCHAR(500),
+--     location VARCHAR(100),
+--     profile_image_url VARCHAR(255),
+--     cover_image_url VARCHAR(255),
+--     website VARCHAR(255),
+--     active BOOLEAN DEFAULT TRUE,
+--     verified BOOLEAN DEFAULT FALSE,
+--     created_at TIMESTAMP NOT NULL,
+--     updated_at TIMESTAMP NOT NULL
+-- );
+
+-- Posts table
+-- CREATE TABLE posts (
+--     id BIGSERIAL PRIMARY KEY,
+--     content TEXT NOT NULL,
+--     author_id BIGINT NOT NULL REFERENCES users(id),
+--     likes_count INTEGER DEFAULT 0,
+--     comments_count INTEGER DEFAULT 0,
+--     shares_count INTEGER DEFAULT 0,
+--     created_at TIMESTAMP NOT NULL,
+--     updated_at TIMESTAMP NOT NULL
+-- );
+
+-- Sample data (optional)
+-- Note: Replace 'password' with actual BCrypt hashed password
+-- INSERT INTO users (username, email, password, full_name, active, verified, created_at, updated_at)
+-- VALUES 
+--     ('john_doe', 'john@example.com', '$2a$10$...', 'John Doe', true, false, NOW(), NOW()),
+--     ('jane_smith', 'jane@example.com', '$2a$10$...', 'Jane Smith', true, true, NOW(), NOW());
