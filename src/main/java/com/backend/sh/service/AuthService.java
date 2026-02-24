@@ -144,9 +144,9 @@ public class AuthService {
                 .verified(user.getVerified())
                 .active(user.getActive())
                 .createdAt(user.getCreatedAt())
-                .followersCount(user.getFollowers().size())
-                .followingCount(user.getFollowing().size())
-                .postsCount(user.getPosts().size())
+                .followersCount(user.getFollowers() != null ? user.getFollowers().size() : 0)
+                .followingCount(user.getFollowing() != null ? user.getFollowing().size() : 0)
+                .postsCount(user.getPosts() != null ? user.getPosts().size() : 0)
                 .build();
     }
 }

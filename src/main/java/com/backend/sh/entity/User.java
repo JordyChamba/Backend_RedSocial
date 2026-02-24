@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -18,10 +20,12 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     
     @Column(nullable = false, unique = true, length = 50)
@@ -69,12 +73,15 @@ public class User {
     
     // Relationships
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Post> posts = new HashSet<>();
     
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Comment> comments = new HashSet<>();
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Like> likes = new HashSet<>();
     
     // Followers: users who follow this user
@@ -84,13 +91,16 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
+    @Builder.Default
     private Set<User> followers = new HashSet<>();
     
     // Following: users this user follows
     @ManyToMany(mappedBy = "followers")
+    @Builder.Default
     private Set<User> following = new HashSet<>();
     
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Notification> notifications = new HashSet<>();
     
     // Helper methods
