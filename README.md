@@ -1,5 +1,54 @@
 # 🎉 SocialHub Backend - ¡COMPLETADO AL 100%!
 
+[![Java](https://img.shields.io/badge/Java-21+-blue?logo=java)](https://www.java.com) [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-green?logo=spring)](https://spring.io/projects/spring-boot) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue?logo=postgresql)](https://www.postgresql.org/) [![Maven](https://img.shields.io/badge/Maven-3.8+-blue?logo=apachemaven)](https://maven.apache.org) [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)]
+
+## 📑 Tabla de contenido
+- [¿Cómo funciona este proyecto?](#cómo-funciona-este-proyecto)
+- [Lo que se ha construido](#lo-que-se-ha-construido)
+- [Estadísticas del proyecto](#estadísticas-del-proyecto)
+- [Inicio rápido](#inicio-rápido-5-minutos)
+- [Pruebas y ejemplos](#pruebas-y-ejemplos)
+  - [Swagger UI](#swagger-ui-recomendado)
+  - [Flujos de usuario](#flujos-de-usuario)
+  - [WebSocket Testing](#websocket-testing)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Próximos pasos](#próximos-pasos-recomendados)
+- [Contribuir](#contribuir)
+- [Licencia](#licencia)
+
+
+## 🧠 ¿Cómo funciona este proyecto?
+
+Este backend está desarrollado con **Spring Boot 3** siguiendo una arquitectura en capas que separa responsabilidades y facilita el mantenimiento.
+
+1. **Controladores (`controller/`)** – Exponen los endpoints REST y reciben las peticiones HTTP.
+2. **Servicios (`service/`)** – Implementan la lógica de negocio; los controladores delegan operaciones aquí.
+3. **Repositorios (`repository/`)** – Interfaces JPA/Hibernate que abstraen el acceso a la base de datos PostgreSQL.
+4. **Entidades (`entity/`)** – Modelos JPA mapeados a las tablas de la base de datos.
+5. **DTOs (`dto/`)** – Objetos de transferencia usados para enviar/recibir datos entre cliente y servidor sin exponer las entidades.
+6. **Seguridad (`security/`)** – Contiene la configuración de Spring Security, el proveedor de JWT, filtros y detalles de usuario.
+7. **Configuraciones (`config/`)** – CORS, Swagger, WebSocket, etc.
+
+> Flujo típico de una petición:
+> `Cliente → Controlador → Servicio → Repositorio → Base de datos`
+
+La autenticación utiliza **JWT** con access y refresh tokens. Un filtro (`JwtAuthenticationFilter`) intercepta cada petición, valida el token y carga un `UserDetails`. Los tokens se emiten con `JwtTokenProvider` y se guardan/rodan según expiración.
+
+Las **notificaciones en tiempo real** se gestionan por WebSocket + STOMP. Cuando ocurre un evento relevante (like, comentario, follow, mención), el `NotificationService` crea la entidad y, si el receptor está conectado, el `SimpMessagingTemplate` publica en la cola `/user/queue/notifications`.
+
+La base de datos PostgreSQL modela relaciones complejas:
+- Usuario ⇄ Post (1‑a‑muchos)
+- Post ⇄ Comentario (1‑a‑muchos) con replies anidados
+- Usuario ⇄ Usuario (muchos‑a‑muchos para seguidores)
+- Usuario ⇄ Publicación (muchos‑a‑muchos para likes)
+- Usuario ⇄ Notificación (1‑a‑muchos)
+
+Los **DTOs** previenen problemas de serialización y evitan exponer campos sensibles. Las excepciones se manejan globalmente mediante `GlobalExceptionHandler`.
+
+Swagger genera la documentación interactiva de los 37 endpoints; sólo se necesita el token Bearer para probarlos.
+
+Este README describe cómo levantar, probar y extender el proyecto.
+
 ## ✅ Lo que se ha construido
 
 ### 📦 Características Principales
@@ -90,7 +139,7 @@ CREATE DATABASE socialhub_db;
 ```
 
 ### 3. Configurar (Opcional)
-Si necesitas cambiar credenciales:
+Puedes modificar directamente `src/main/resources/application.properties` o bien definir variables de entorno (`SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, etc.) para adaptarlo a tu entorno:
 ```properties
 # src/main/resources/application.properties
 spring.datasource.username=tu_usuario
@@ -138,30 +187,16 @@ curl -X POST http://localhost:8080/api/posts \
 curl http://localhost:8080/api/posts
 ```
 
-## 📚 Documentación
+## Pruebas y ejemplos
 
-- **QUICKSTART.md** - Guía de inicio rápido
-- **README.md** - Documentación general
-- **API_DOCUMENTATION.md** - Todos los 37 endpoints documentados
-- **TESTING.md** - Guía completa de testing
-- **PROGRESS.md** - Estado del proyecto
-
-## 🧪 Testing Completo
-
-### Con Swagger UI (Recomendado)
+### Swagger UI (Recomendado)
 1. Abrir: http://localhost:8080/swagger-ui.html
 2. Click en "Authorize"
 3. Registrar usuario → copiar accessToken
 4. Pegar token en "Value": `Bearer tu_token_aqui`
 5. Probar todos los endpoints interactivamente
 
-### Con Postman
-1. Importar colección (crear desde API_DOCUMENTATION.md)
-2. Crear environment variable: `accessToken`
-3. Después de login, guardar token automáticamente
-4. Todas las peticiones autenticadas usarán el token
-
-### Ejemplos de Flujos de Usuario
+### Flujos de usuario
 
 #### Flujo 1: Usuario Nuevo
 ```bash
@@ -214,7 +249,7 @@ GET /api/posts/feed
 GET /api/posts/trending
 ```
 
-## 🌐 WebSocket Testing
+## WebSocket Testing
 
 ### Con JavaScript:
 ```javascript
@@ -307,109 +342,8 @@ backend/
 │
 ├── pom.xml
 ├── README.md
-├── QUICKSTART.md
-├── API_DOCUMENTATION.md
-├── TESTING.md
-└── PROGRESS.md
 ```
 
-## 🎯 Próximos Pasos Recomendados
+## 📄 Licencia
 
-### Opción 1: Dockerizar ✅
-Crear `docker-compose.yml` para:
-- PostgreSQL
-- Spring Boot Backend
-- Nginx (cuando tengamos frontend)
-
-### Opción 2: Frontend con React 🚀
-- React 18 + TypeScript + Vite
-- Tailwind CSS + Shadcn/ui
-- Zustand para estado
-- React Query para caché
-- Socket.io para WebSocket
-- Integración completa con este backend
-
-### Opción 3: Funcionalidades Adicionales 📈
-- Sistema de mensajes directos
-- Historias (stories) temporales
-- Verificación de email
-- Recuperación de contraseña
-- Subida de archivos a Cloudinary
-- Sistema de reportes y analytics
-- Roles y permisos (admin/user)
-
-## ✨ Características Destacables para CV
-
-1. **Arquitectura Moderna**
-   - Clean Architecture
-   - Separación de capas (Controller → Service → Repository)
-   - DTOs para transferencia de datos
-   - Manejo centralizado de excepciones
-
-2. **Seguridad**
-   - JWT con Access y Refresh tokens
-   - Spring Security configurado
-   - Encriptación de contraseñas
-   - CORS configurado
-
-3. **Tiempo Real**
-   - WebSocket con STOMP
-   - Notificaciones instantáneas
-   - Arquitectura event-driven
-
-4. **Buenas Prácticas**
-   - Validación de datos con Jakarta Validation
-   - Paginación en listados
-   - Código limpio y documentado
-   - Swagger/OpenAPI documentación
-
-5. **Base de Datos**
-   - PostgreSQL con JPA/Hibernate
-   - Relaciones complejas (Many-to-Many, One-to-Many)
-   - Queries optimizadas
-   - Índices en columnas clave
-
-## 🏆 ¡Proyecto Listo para Portafolio!
-
-Este backend demuestra:
-- ✅ Conocimiento sólido de Spring Boot
-- ✅ Manejo de seguridad y autenticación
-- ✅ Arquitectura escalable
-- ✅ Comunicación en tiempo real
-- ✅ API RESTful bien diseñada
-- ✅ Documentación profesional
-- ✅ Código limpio y organizado
-
-**¡Perfecto para mostrar en tu CV y entrevistas técnicas!** 🎉
-
----
-
-## 💡 Consejos para Demostrar el Proyecto
-
-### En Entrevistas:
-1. Explicar la arquitectura (capas, separación de responsabilidades)
-2. Mostrar el manejo de seguridad con JWT
-3. Demostrar WebSocket en tiempo real
-4. Explicar las relaciones complejas en la BD
-5. Mostrar Swagger UI funcionando
-
-### En tu CV:
-```
-SocialHub - Plataforma de Red Social Full Stack
-• Backend: Java 21, Spring Boot 3.3, PostgreSQL
-• Autenticación JWT con refresh tokens
-• WebSocket para notificaciones en tiempo real
-• 37 endpoints REST documentados con Swagger
-• Arquitectura limpia con 5 capas bien definidas
-```
-
-### En tu README de GitHub:
-- Screenshots de Swagger UI
-- Diagrama de arquitectura
-- GIF de notificaciones en tiempo real
-- Instrucciones de setup claras
-- Badges de tecnologías utilizadas
-
----
-
-**¿Listo para empezar con el frontend React?** 🚀
+Este proyecto está bajo la licencia **MIT**. Revisa el archivo `LICENSE` para más detalles.

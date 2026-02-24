@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -52,6 +51,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
+            .headers(headers -> headers
+                .frameOptions(frameOptions -> frameOptions.disable())
+            )
             .exceptionHandling(exception -> 
                 exception.authenticationEntryPoint(authenticationEntryPoint)
             )
@@ -63,6 +65,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/ws/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
                 
                 // Public read-only endpoints
                 .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()

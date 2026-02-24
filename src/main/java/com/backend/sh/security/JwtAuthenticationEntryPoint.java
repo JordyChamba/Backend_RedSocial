@@ -1,6 +1,7 @@
 package com.backend.sh.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.backend.sh.dto.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         ApiResponse<Void> apiResponse = ApiResponse.error("Unauthorized: " + authException.getMessage());
         
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         mapper.writeValue(response.getOutputStream(), apiResponse);
     }
 }
