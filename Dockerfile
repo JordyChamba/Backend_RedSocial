@@ -1,5 +1,6 @@
 # multi-stage build for the Spring Boot backend
-FROM maven:3.9.5-eclipse-temurin-17 AS build
+# Use JDK 21 images to match the project's Java version
+FROM maven:3.9.5-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # copy only pom first to leverage cache
@@ -11,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests -B
 
 # runtime image
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080

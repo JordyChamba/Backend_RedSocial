@@ -154,6 +154,8 @@ mvn spring-boot:run
 ```
 
 #### 🐳 Usar Docker (opcional)
+Los `Dockerfile` del backend están basados en JDK 21 para coincidir con la versión de Java usada por el proyecto. Asegúrate de que cualquier build local también use Java 21.
+
 En la raíz del proyecto hay un `Dockerfile` y un `docker-compose.yml` que construyen y levantan ambos servicios.
 ```bash
 # construir y arrancar los contenedores
