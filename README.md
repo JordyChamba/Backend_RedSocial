@@ -153,6 +153,16 @@ mvn clean install
 mvn spring-boot:run
 ```
 
+#### 🐳 Usar Docker (opcional)
+En la raíz del proyecto hay un `Dockerfile` y un `docker-compose.yml` que construyen y levantan ambos servicios.
+```bash
+# construir y arrancar los contenedores
+cd /home/jpeter/Escritorio/socialHub
+docker compose up --build
+```
+El backend quedará accesible en `http://localhost:8080` y el frontend en `http://localhost:3000`.
+
+
 ✅ **API corriendo en:** http://localhost:8080
 ✅ **Swagger UI:** http://localhost:8080/swagger-ui.html
 
